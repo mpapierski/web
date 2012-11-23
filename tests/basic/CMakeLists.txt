@@ -1,0 +1,9 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+PROJECT (basic)
+
+ADD_EXECUTABLE (basic
+	basic.cpp)
+TARGET_LINK_LIBRARIES (basic
+	web)
+ADD_TEST (basic
+	basic)
