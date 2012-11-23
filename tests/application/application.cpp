@@ -18,3 +18,14 @@ BOOST_AUTO_TEST_CASE (test_application_constructor)
 }
 
 //____________________________________________________________________________//
+
+BOOST_AUTO_TEST_CASE (test_application_router)
+{
+	const char * args[] = {"./test"};
+	web::application app(1, const_cast<char**>(args));
+	BOOST_REQUIRE_EQUAL(app.routes().size(), 0);
+	app.get("/", [](web::request&, web::response&) {
+
+	});
+	BOOST_REQUIRE_EQUAL(app.routes().size(), 1);
+}
