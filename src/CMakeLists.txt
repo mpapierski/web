@@ -4,6 +4,7 @@ PROJECT (web)
 SET (SOURCES
 	request.cpp
 	response.cpp
+	application.cpp
 )
 
 ADD_LIBRARY (web
