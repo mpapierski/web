@@ -12,3 +12,8 @@ response::~response()
 {
 	//
 }
+
+std::stringstream & response::stream()
+{
+	return stream_;
+}

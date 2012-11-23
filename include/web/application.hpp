@@ -27,13 +27,17 @@ enum http_verbs
  */
 class application
 {
-private:
-	std::vector<std::string> args_;
-
+public:
+	// Public types
+	
 	/**
 	 * All the views should be of this type.
 	 */
 	typedef std::function<void(request &, response &)> view_function_t;
+private:
+	std::vector<std::string> args_;
+
+	
 
 	/**
 	 * verb->view map type (a better indexing?)
@@ -79,13 +83,13 @@ public:
 	void get(std::string const & path, view_function_t view);
 
 	/**
-	 * Router. Match http_verb and path to a view.
-	 * Run the view and return its result.
+	 * Get view function for a route.
+	 * Match http_verb and path to a view, then return it.
 	 *
 	 * @param http_verb HTTP verb (GET, POST, etc.)
 	 * @param path View path.
 	 */
-	std::string route(std::string const & http_verb,
+	view_function_t get_route(int http_verb,
 		std::string const & path);
 };
 

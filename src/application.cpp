@@ -28,6 +28,18 @@ void application::get(std::string const & path, view_function_t view)
 	}
 }
 
+application::view_function_t application::get_route(int http_verb,
+	std::string const & path)
+{
+	view_map_t::iterator mount = views_.find(path);
+	if (mount == views_.end())
+		return view_function_t(); // Path not found.
+	verb_map_t::iterator route = mount->second.find(http_verb);
+	if (route == mount->second.end())
+		return view_function_t(); // Method not supported?
+	return route->second;
+}
+
 std::vector<std::string> const & application::args() const
 {
 	return args_;
