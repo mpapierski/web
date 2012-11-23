@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE (test_application_router)
 	// Run the view with fake req/res pair.
 	web::request req("GET / HTTP/1.1\r\n\r\n");
 	web::response res(-1);
-	view(req, res);
+	app.process(req, res);
 	BOOST_REQUIRE_EQUAL(res.stream().str(), "Hello world!");
 }
 

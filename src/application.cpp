@@ -40,6 +40,12 @@ application::view_function_t application::get_route(int http_verb,
 	return route->second;
 }
 
+void application::process(request & req, response & res)
+{
+	view_function_t view = get_route(req.verb(), req.path());
+	view(req, res);
+}
+
 std::vector<std::string> const & application::args() const
 {
 	return args_;

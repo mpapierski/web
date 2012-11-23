@@ -13,8 +13,8 @@ BOOST_AUTO_TEST_CASE (test_request_simple_header_get)
 {
 	std::string header = "GET / HTTP/1.1\r\n\r\n";
 	web::request req(header);
-	BOOST_CHECK_EQUAL(req.method, "GET");
-	BOOST_CHECK_EQUAL(req.path, "/");
+	BOOST_CHECK_EQUAL(req.method(), "GET");
+	BOOST_CHECK_EQUAL(req.path(), "/");
 }
 
 //____________________________________________________________________________//
@@ -23,8 +23,8 @@ BOOST_AUTO_TEST_CASE (test_request_simple_header_post)
 {
 	std::string header = "POST /address HTTP/1.1\r\n\r\n";
 	web::request req(header);
-	BOOST_CHECK_EQUAL(req.method, "POST");
-	BOOST_CHECK_EQUAL(req.path, "/address");
+	BOOST_CHECK_EQUAL(req.method(), "POST");
+	BOOST_CHECK_EQUAL(req.path(), "/address");
 }
 
 //____________________________________________________________________________//

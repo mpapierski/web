@@ -12,16 +12,6 @@
 namespace web {
 
 /**
- * Supported verbs.
- */
-enum http_verbs
-{
-	WILDCARD, /* All verbs */
-	GET,
-	POST
-};
-
-/**
  * Main application logic class.
  * Non-copyable.
  */
@@ -29,15 +19,13 @@ class application
 {
 public:
 	// Public types
-	
+
 	/**
 	 * All the views should be of this type.
 	 */
 	typedef std::function<void(request &, response &)> view_function_t;
 private:
 	std::vector<std::string> args_;
-
-	
 
 	/**
 	 * verb->view map type (a better indexing?)
@@ -91,6 +79,14 @@ public:
 	 */
 	view_function_t get_route(int http_verb,
 		std::string const & path);
+
+	/**
+	 * Process a request and return response.
+	 *
+	 * @param req A request instance with headers specified.
+	 * @param res A response instance
+	 */
+	void process(request & req, response & res);
 };
 
 } /* /namespace web */
