@@ -14,6 +14,7 @@ namespace web {
 enum http_verbs
 {
 	UNKNOWN,
+	WILDCARD,
 	GET,
 	POST
 };

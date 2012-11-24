@@ -57,7 +57,6 @@ private:
 public:
 	application(application const &) = delete;
 	application & operator=(application const &) = delete;
-
 	/**
 	 * Application constructor.
 	 *
@@ -65,24 +64,39 @@ public:
 	 * @param argv Argument values.
 	 */
 	application(int argc, char * argv[]);
-
 	/**
 	 * Args getter.
 	 */
 	std::vector<std::string> const & args() const;
-
 	/**
 	 * Get all app routes.
 	 */
 	view_map_t const & routes() const;
-
 	/**
 	 * Mount a GET view at `path` to `view`.
+	 * @param verb (GET, POST, ...)
+	 * @param path Path.
+	 * @param view View function.
+	 */
+	void mount_route(int verb, std::string const & path, view_function_t view);
+	/**
+	 * Convenient shortcut for mounting GET view.
 	 * @param path Path.
 	 * @param view View function.
 	 */
 	void get(std::string const & path, view_function_t view);
-
+	/**
+	 * Convenient shortcut for mounting GET view.
+	 * @param path Path.
+	 * @param view View function.
+	 */
+	void post(std::string const & path, view_function_t view);
+	/**
+	 * Convenient shortcut for mounting wildcard view.
+	 * @param path Path.
+	 * @param view View function.
+	 */
+	void all(std::string const & path, view_function_t view);
 	/**
 	 * Get view function for a route.
 	 * Match http_verb and path to a view, then return it.
@@ -92,7 +106,6 @@ public:
 	 */
 	view_function_t get_route(int http_verb,
 		std::string const & path);
-
 	/**
 	 * Process a request and return response.
 	 *
@@ -101,7 +114,6 @@ public:
 	 * @return A valid HTTP response.
 	 */
 	std::string process(request & req, response & res);
-
 	/**
 	 * Run very simple HTTP server to process remote requests.
 	 *

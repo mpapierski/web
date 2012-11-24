@@ -10,23 +10,38 @@ application::application(int argc, char * argv[])
 
 }
 
-void application::get(std::string const & path, view_function_t view)
+void application::mount_route(int verb, std::string const & path, view_function_t view)
 {
 	view_map_t::iterator mount = views_.find(path);
 	if (mount == views_.end())
 	{
 		// Found no views for specified path.
 		verb_map_t verbs;
-		verbs.insert(std::make_pair(GET, view));
+		verbs.insert(std::make_pair(verb, view));
 		views_.insert(std::make_pair(path, verbs));
 		return;
 	}
 	// Add new view.
-	std::pair<verb_map_t::iterator, bool> route = mount->second.insert(std::make_pair(GET, view));
+	std::pair<verb_map_t::iterator, bool> route = mount->second.insert(std::make_pair(verb, view));
 	if (!route.second)
 	{
-		throw std::runtime_error("GET view already mounted at specified path.");
+		throw std::logic_error("View already mounted at specified path (" + path + ").");
 	}
+}
+
+void application::get(std::string const & path, view_function_t view)
+{
+	mount_route(GET, path, view);
+}
+
+void application::post(std::string const & path, view_function_t view)
+{
+	mount_route(POST, path, view);
+}
+
+void application::all(std::string const & path, view_function_t view)
+{
+	mount_route(WILDCARD, path, view);
 }
 
 application::view_function_t application::get_route(int http_verb,
@@ -37,7 +52,11 @@ application::view_function_t application::get_route(int http_verb,
 		return view_function_t(); // Path not found.
 	verb_map_t::iterator route = mount->second.find(http_verb);
 	if (route == mount->second.end())
-		return view_function_t(); // Method not supported?
+	{
+		route = mount->second.find(WILDCARD);
+		if (route == mount->second.end())
+			return view_function_t(); // Method not supported?
+	}
 	return route->second;
 }
 
