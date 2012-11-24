@@ -60,14 +60,25 @@ application::view_function_t application::get_route(int http_verb,
 	return route->second;
 }
 
-std::string application::process(request & req, response & res)
+std::string application::process(request & req, response & res) throw()
 {
+	unsigned int result_code = 200;
 	view_function_t view = get_route(req.verb(), req.path());
-	view(req, res); // can throw
+	try
+	{
+		// Check if specified view exists.
+		// If not, throw "404" - view does not exists.
+		if (!view)
+			throw http_error(404);
+		view(req, res); // can throw
+	} catch (web::http_error const & e)
+	{
+		result_code = e.error_code();
+	}
 	std::string const & str = res.stream().str();
 	// Construct a valid HTTP response.
 	std::stringstream output;
-	output << "HTTP/1.1 200 OK\r\n"
+	output << "HTTP/1.1 " << result_code << " OK\r\n"
 		"Content-Type:text/html\r\n"
 		"Content-Length: " << str.length() <<
 		"\r\n\r\n"

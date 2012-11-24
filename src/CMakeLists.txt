@@ -5,6 +5,7 @@ SET (SOURCES
 	request.cpp
 	response.cpp
 	application.cpp
+	exceptions.cpp
 )
 
 ADD_LIBRARY (web

@@ -16,6 +16,7 @@
 #include <web/aux/utils.hpp>
 #include <web/request.hpp>
 #include <web/response.hpp>
+#include <web/exceptions.hpp>
 
 namespace web {
 
@@ -107,13 +108,13 @@ public:
 	view_function_t get_route(int http_verb,
 		std::string const & path);
 	/**
-	 * Process a request and return response.
+	 * Process a request and return response. Does not throw.
 	 *
 	 * @param req A request instance with headers specified.
 	 * @param res A response instance
 	 * @return A valid HTTP response.
 	 */
-	std::string process(request & req, response & res);
+	std::string process(request & req, response & res) throw();
 	/**
 	 * Run very simple HTTP server to process remote requests.
 	 *
