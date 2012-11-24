@@ -136,7 +136,7 @@ void application::listen(unsigned short port, const char * address)
 					// Found headers.
 					std::string headers(raw_request.begin(), raw_request.end());
 					request req(headers); // can throw
-					response res(client_socket);
+					response res;
 					std::string const & data = process(req, res);
 					// Flush raw response (with headers) to client.
 					std::vector<char> buf(data.begin(), data.end());
