@@ -1,0 +1,9 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+PROJECT (helloworld)
+
+SET (SOURCES
+	main.cpp)
+ADD_EXECUTABLE (helloworld
+	${SOURCES})
+TARGET_LINK_LIBRARIES (helloworld
+	web)

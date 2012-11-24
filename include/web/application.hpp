@@ -6,6 +6,12 @@
 #include <map>
 #include <functional>
 
+#include <unistd.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#include <web/aux/utils.hpp>
 #include <web/request.hpp>
 #include <web/response.hpp>
 
@@ -41,6 +47,11 @@ private:
 	 * Map of views.
 	 */
 	view_map_t views_;
+
+	/**
+	 * Server socket file descriptor.
+	 */
+	int server_socket_;
 public:
 	application(application const &) = delete;
 	application & operator=(application const &) = delete;
@@ -85,8 +96,17 @@ public:
 	 *
 	 * @param req A request instance with headers specified.
 	 * @param res A response instance
+	 * @return A valid HTTP response.
 	 */
-	void process(request & req, response & res);
+	std::string process(request & req, response & res);
+
+	/**
+	 * Run very simple HTTP server to process remote requests.
+	 *
+	 * @param port Port number (0-65535)
+	 * @param address Address (default is 127.0.0.1)
+	 */
+	void listen(unsigned short port, const char * address = "127.0.0.1");
 };
 
 } /* /namespace web */

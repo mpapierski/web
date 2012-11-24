@@ -41,8 +41,11 @@ BOOST_AUTO_TEST_CASE (test_application_router)
 	// Run the view with fake req/res pair.
 	web::request req("GET / HTTP/1.1\r\n\r\n");
 	web::response res(-1);
-	app.process(req, res);
+	std::string data = app.process(req, res);
 	BOOST_REQUIRE_EQUAL(res.stream().str(), "Hello world!");
+	// Raw response:
+	const char * raw_response = "HTTP/1.1 200 OK\r\nContent-Type:text/html\r\nContent-Length: 12\r\n\r\nHello world!";
+	BOOST_REQUIRE_EQUAL(data, raw_response);
 }
 
 //____________________________________________________________________________//
