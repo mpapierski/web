@@ -10,7 +10,7 @@
 	do                                                                       \
 	{                                                                        \
 		int e = errno;                                                       \
-		const char * s = std::strerror(e);                                        \
+		const char * s = std::strerror(e);                                   \
 		throw std::runtime_error(s);                                         \
 	} while(0)
 
