@@ -1,4 +1,4 @@
-# web
+# web [![Build Status](https://secure.travis-ci.org/mpapierski/web.png)](http://travis-ci.org/mpapierski/web)
 
 Minimalistic web framework for C++11.
 
