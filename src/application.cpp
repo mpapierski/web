@@ -1,5 +1,5 @@
 #include <web/application.hpp>
-#include <iostream>
+
 using namespace web;
 
 application::application(int argc, char * argv[])
@@ -17,8 +17,8 @@ void application::get(std::string const & path, view_function_t view)
 	{
 		// Found no views for specified path.
 		verb_map_t verbs;
-		verbs.emplace(GET, view);
-		views_.emplace(path, verbs);
+		verbs.insert(std::make_pair(GET, view));
+		views_.insert(std::make_pair(path, verbs));
 		return;
 	}
 	// Add new view.

@@ -1,11 +1,13 @@
 #if !defined(WEB_APPLICATION_H_INCLUDED_)
 #define WEB_APPLICATION_H_INCLUDED_
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
 #include <functional>
-
+#include <cerrno>
+#include <cstring>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
