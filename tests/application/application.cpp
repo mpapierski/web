@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE (test_application_router_return_http_error)
 			return;
 		}
 		res.stream() << "You're not welcome!";
-		throw web::http_error(400); // Forbidden
+		throw web::http_error(403); // Forbidden
 	});
 	BOOST_REQUIRE(app.get_route(web::GET, "/wildcard/"));
 	BOOST_REQUIRE(app.get_route(web::POST, "/wildcard/"));
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE (test_application_router_return_http_error)
 	std::string().swap(data);
 	data = app.process(req_post, res_post);
 	BOOST_REQUIRE_EQUAL(res_post.stream().str(), "You're not welcome!");
-	BOOST_REQUIRE_EQUAL(data, "HTTP/1.1 400 OK\r\nContent-Type:text/html\r\nContent-Length: 19\r\n\r\nYou're not welcome!");
+	BOOST_REQUIRE_EQUAL(data, "HTTP/1.1 403 OK\r\nContent-Type:text/html\r\nContent-Length: 19\r\n\r\nYou're not welcome!");
 
 	// Return 404
 	web::request req_404("GET /doesnotexists/ HTTP/1.1\r\n\r\n");
