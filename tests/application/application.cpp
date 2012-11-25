@@ -104,6 +104,14 @@ BOOST_AUTO_TEST_CASE (test_application_router_return_http_error)
 		res.stream() << "You're not welcome!";
 		throw web::http_error(403); // Forbidden
 	});
+	app.get("/error1/", [](web::request&, web::response& res) {
+		// Buffered data is ignored.
+		res.stream() << "Hello world!";
+		// Results in "500" response - server error
+		// with a message obtained from .what().
+
+		throw std::runtime_error("wat");
+	});
 	BOOST_REQUIRE(app.get_route(web::GET, "/wildcard/"));
 	BOOST_REQUIRE(app.get_route(web::POST, "/wildcard/"));
 	// Prepare request
@@ -129,6 +137,15 @@ BOOST_AUTO_TEST_CASE (test_application_router_return_http_error)
 	data = app.process(req_404, res_404);
 	BOOST_REQUIRE_EQUAL(res_404.stream().str(), "");
 	BOOST_REQUIRE_EQUAL(data, "HTTP/1.1 404 OK\r\nContent-Type:text/html\r\nContent-Length: 0\r\n\r\n");
+
+	// 500 - unknown exception (std::exception based)
+	web::request req_500a("GET /error1/ HTTP/1.1\r\n\r\n");
+	web::response res_500a;
+
+	data = app.process(req_500a, res_500a);
+	BOOST_REQUIRE_EQUAL(res_500a.stream().str(), "Hello world!");
+	BOOST_REQUIRE_EQUAL(data, "HTTP/1.1 500 OK\r\nContent-Type:text/html\r\nContent-Length: 3\r\n\r\nwat");
+
 }
 
 //____________________________________________________________________________//

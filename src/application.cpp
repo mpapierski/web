@@ -7,7 +7,6 @@ application::application(int argc, char * argv[])
 	, server_socket_(-1)
 {
 	//
-
 }
 
 void application::mount_route(int verb, std::string const & path, view_function_t view)
@@ -64,18 +63,35 @@ std::string application::process(request & req, response & res) throw()
 {
 	unsigned int result_code = 200;
 	view_function_t view = get_route(req.verb(), req.path());
+	std::string str; // Site response.
 	try
 	{
 		// Check if specified view exists.
 		// If not, throw "404" - view does not exists.
 		if (!view)
 			throw http_error(404);
-		view(req, res); // can throw
+		// Run view.
+		view(req, res);
+		// Generated response.
+		str = res.stream().str();
 	} catch (web::http_error const & e)
 	{
+		// Change HTTP result.
 		result_code = e.error_code();
+		// Generated response
+		// (before the exception was raised)
+		str = res.stream().str();
+	} catch (std::exception const & e)
+	{
+		// We know what does this error (could) mean.
+		result_code = 500;
+		// Exception description is our response.
+		str = e.what();
+	} catch (...)
+	{
+		// We do not have idea what this error means.
+		result_code = 500;
 	}
-	std::string const & str = res.stream().str();
 	// Construct a valid HTTP response.
 	std::stringstream output;
 	output << "HTTP/1.1 " << result_code << " OK\r\n"
