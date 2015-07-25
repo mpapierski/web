@@ -2,7 +2,8 @@
 
 using namespace web;
 
-response::response()
+response::response(http_server_api::http_server_client * client)
+	: client_(client)
 {
 	//
 }

@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include <stdexcept>
+#include <web/server.hpp>
 
 namespace web {
 
@@ -57,7 +58,7 @@ public:
 	 *
 	 * @param headers Raw HTTP request headers.
 	 */
-	request(std::string const & headers);
+	request(http_server_api::http_server_client * client);
 };
 
 } /* /namespace web */

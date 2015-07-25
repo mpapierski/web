@@ -17,8 +17,24 @@
 #include <web/request.hpp>
 #include <web/response.hpp>
 #include <web/exceptions.hpp>
+#include <web/server.hpp>
 
 namespace web {
+
+class application;
+
+/**
+ * A glue that glues together http request and app
+ */
+class request_handler
+	: public http_server_handler
+{
+public:
+	request_handler(application * app);
+	int message_complete(http_server_api::http_server_client * client);
+private:
+	application * app_;
+};
 
 /**
  * Main application logic class.
@@ -50,11 +66,6 @@ private:
 	 * Map of views.
 	 */
 	view_map_t views_;
-
-	/**
-	 * Server socket file descriptor.
-	 */
-	int server_socket_;
 public:
 	application(application const &) = delete;
 	application & operator=(application const &) = delete;

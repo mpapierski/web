@@ -6,8 +6,12 @@ SET (SOURCES
 	response.cpp
 	application.cpp
 	exceptions.cpp
+	server.cpp
 )
 
 ADD_LIBRARY (web
 	${SOURCES}
 )
+
+TARGET_LINK_LIBRARIES (web
+	http_server)

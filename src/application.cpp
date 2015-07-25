@@ -2,9 +2,39 @@
 
 using namespace web;
 
+request_handler::request_handler(application * app)
+	: app_(app)
+{
+}
+
+
+int request_handler::message_complete(http_server_api::http_server_client * client)
+{
+	request req(client);
+	response res(client);
+	std::string data = app_->process(req, res);
+
+	http_server_api::http_server_response * response = http_server_api::http_server_response_new();
+	if (!response)
+	{
+		return 1;
+	}
+	int r;
+	std::error_code ec;
+	r = http_server_api::http_server_response_begin(client, response);
+	ec.assign(r, get_http_error_category());
+	assert(r == http_server_api::HTTP_SERVER_OK);
+	r = http_server_api::http_server_response_write_head(response, 200);
+	assert(r == http_server_api::HTTP_SERVER_OK);
+	r = http_server_api::http_server_response_write(response, const_cast<char *>(data.c_str()), data.size());
+	assert(r == http_server_api::HTTP_SERVER_OK);
+	r = http_server_api::http_server_response_end(response);
+	assert(r == http_server_api::HTTP_SERVER_OK);
+	return 0;
+}
+
 application::application(int argc, char * argv[])
 	: args_(argv, argv + argc)
-	, server_socket_(-1)
 {
 	//
 }
@@ -114,72 +144,7 @@ application::view_map_t const & application::routes() const
 
 void application::listen(unsigned short port, const char * address)
 {
-	server_socket_ = ::socket(AF_INET, SOCK_STREAM, 0);
-	if (server_socket_ < 0)
-	{
-		__throw_system_exception();
-	}
-	struct sockaddr_in serv_addr = {0};
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
-	serv_addr.sin_port = htons(port);
-	int value = 1;
-	if (::setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(serv_addr)) < 0)
-		__throw_system_exception();
-	if (::bind(server_socket_, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
-		__throw_system_exception();
-	if (::listen(server_socket_, 1) < 0)
-		__throw_system_exception();
-	while (true)
-	{
-		struct sockaddr_in client_addr = {0};
-		socklen_t client_len = sizeof(client_addr);
-		int client_socket = ::accept(server_socket_, (struct sockaddr *) &client_addr, &client_len);			
-		if (client_socket < 0)
-			__throw_system_exception();
-		// New client connected
-		std::vector<char> raw_request(65535); // Need more?
-		unsigned int pos = 0;
-		while (pos < raw_request.size())
-		{
-			int n = ::read(client_socket, &raw_request[pos], raw_request.size() - pos);
-			if (n < 0)
-			{
-				__throw_system_exception();
-			} else if (n == 0)
-			{
-				// Client disconnected
-				break;
-			}
-			// Find headers
-			pos += n;
-			for (unsigned int i = 3; i < pos; i++)
-			{
-				if ((raw_request[i - 3] == '\r') &&
-					(raw_request[i - 2] == '\n') &&
-					(raw_request[i - 1] == '\r') &&
-					(raw_request[i] == '\n'))
-				{
-					// Found headers.
-					std::string headers(raw_request.begin(), raw_request.end());
-					request req(headers); // can throw
-					response res;
-					std::string const & data = process(req, res);
-					// Flush raw response (with headers) to client.
-					std::vector<char> buf(data.begin(), data.end());
-					unsigned int pos = 0;
-					while (pos < buf.size())
-					{
-						int n = ::send(client_socket, &buf[pos], buf.size() - pos, 0);
-						if (n < 0)
-						{
-							std::cerr << "Unable to write data to socket: " << strerror(errno) << std::endl;
-							break;
-						}
-						pos += n;
-					}
-				}
-			}
-		}
-	}
+	http_server server;
+	server.start(new request_handler(this));
+	server.run_forever();
 }

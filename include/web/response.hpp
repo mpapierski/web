@@ -2,6 +2,7 @@
 #define WEB_RESPONSE_H_INCLUDED_
 
 #include <sstream>
+#include <web/server.hpp>
 
 namespace web {
 
@@ -15,11 +16,12 @@ private:
 	 * Buffered data written from view.
 	 */
 	std::stringstream stream_;
+	http_server_api::http_server_client * client_;
 public:
 	/**
 	 * Constructor of HTTP response.
 	 */
-	response();
+	response(http_server_api::http_server_client * client);
 	/**
 	 * All buffered data is written to the client_socket_ descriptor.
 	 */

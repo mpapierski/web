@@ -7,32 +7,16 @@
 
 using namespace boost;
 
-//____________________________________________________________________________//
-
-BOOST_AUTO_TEST_CASE (test_request_simple_header_get)
-{
-	std::string header = "GET / HTTP/1.1\r\n\r\n";
-	web::request req(header);
-	BOOST_CHECK_EQUAL(req.method(), "GET");
-	BOOST_CHECK_EQUAL(req.path(), "/");
-}
+web::http_server_api::http_server server;
+web::http_server_api::http_server_socket_t sock;
+web::http_server_api::http_server_handler handler;
+web::http_server_api::http_server_client * client = web::http_server_api::http_server_new_client(&server, sock, &handler);
 
 //____________________________________________________________________________//
 
-BOOST_AUTO_TEST_CASE (test_request_simple_header_post)
+BOOST_AUTO_TEST_CASE (test_request_constructor)
 {
-	std::string header = "POST /address HTTP/1.1\r\n\r\n";
-	web::request req(header);
-	BOOST_CHECK_EQUAL(req.method(), "POST");
-	BOOST_CHECK_EQUAL(req.path(), "/address");
-}
-
-//____________________________________________________________________________//
-
-BOOST_AUTO_TEST_CASE (test_request_invalid_header_no_verb)
-{
-	std::string header;
-	BOOST_CHECK_THROW((web::request(header)), std::runtime_error);
+	web::request req(client);
 }
 
 //____________________________________________________________________________//

@@ -17,12 +17,16 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
 	ENDIF ()
 ELSE (CMAKE_COMPILER_IS_GNUCXX)
 	MESSAGE (STATUS "C++11 activated.")
-	ADD_DEFINITIONS ("-std=libc++ -std=c++11")
 	# Clang++ does not recognize add_definitions ?
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++11")
 ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_SOURCE_DIR}/include)
+ADD_SUBDIRECTORY (deps)
+
+INCLUDE_DIRECTORIES (
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/deps/http-server/include
+	${CMAKE_CURRENT_SOURCE_DIR}/deps/http-server/deps/http-parser/)
 
 ADD_SUBDIRECTORY (src)
 ADD_SUBDIRECTORY (examples)

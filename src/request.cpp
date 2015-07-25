@@ -2,24 +2,18 @@
 
 using namespace web;
 
-request::request(std::string const & headers)
+request::request(http_server_api::http_server_client * client)
 {
-	std::stringstream ss(headers);
-	std::string line;
-	while (std::getline(ss, line))
+	char * url = nullptr;
+	int r = http_server_client_getinfo(client, http_server_api::HTTP_SERVER_CLIENTINFO_URL, &url);
+    std::error_code ec(r, get_http_error_category());
+	if (ec)
 	{
-		if ((line.find("GET") == 0) ||
-			(line.find("POST") == 0))
-		{
-			std::stringstream ss(line);
-			ss >> method_ >> path_;
-		}
+		throw std::system_error(ec);
 	}
-
-	if (method_.empty())
-	{
-		throw std::runtime_error("Found no HTTP verb in the request!");
-	}
+    path_ = url;
+    // TODO: No way to retrieve method?
+	method_ = "GET";
 }
 
 std::string const & request::method() const
