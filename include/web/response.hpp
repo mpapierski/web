@@ -6,30 +6,44 @@
 
 namespace web {
 
+class response;
+
 /**
  * HTTP response.
  */
 class response
 {
-private:
-	/**
-	 * Buffered data written from view.
-	 */
-	std::stringstream stream_;
-	http_server_api::http_server_client * client_;
 public:
 	/**
 	 * Constructor of HTTP response.
 	 */
-	response(http_server_api::http_server_client * client);
+	response();
 	/**
 	 * All buffered data is written to the client_socket_ descriptor.
 	 */
 	~response();
 	/**
-	 * A reference to view's stream.
+	 * Begin HTTP response
 	 */
-	std::stringstream & stream();
+	void begin(http_server_api::http_server_client * client);
+	/**
+	 * Start a response by sending a status code
+	 */
+	void write_head(int status);
+	/**
+	 * Send string
+	 */
+	void write(const std::string & data);
+	/**
+	 * Send buffer
+	 */
+	void write(const char * data, std::size_t size);
+	/**
+	 * End current response
+	 */
+	void end();
+private:
+	http_server_api::http_server_response * response_;
 };
 
 } /* /namespace web */

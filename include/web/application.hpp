@@ -119,14 +119,6 @@ public:
 	view_function_t get_route(int http_verb,
 		std::string const & path);
 	/**
-	 * Process a request and return response. Does not throw.
-	 *
-	 * @param req A request instance with headers specified.
-	 * @param res A response instance
-	 * @return A valid HTTP response.
-	 */
-	std::string process(request & req, response & res) throw();
-	/**
 	 * Run very simple HTTP server to process remote requests.
 	 *
 	 * @param port Port number (0-65535)

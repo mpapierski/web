@@ -11,7 +11,7 @@ main(int argc, char * argv[])
 	try
 	{
 		app.get("/", [](request & req, response & res) {
-			res.stream() << "Hello world!";
+			res.write("Hello world!");
 		});
 		app.listen(3333);
 	} catch (exception const & e)
