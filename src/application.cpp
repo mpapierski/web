@@ -23,14 +23,12 @@ int request_handler::message_complete(http_server_api::http_server_client * clie
 		res.end();
 		return 0;
 	}
-	res.write_head(200);
 	try
 	{
 		view(req, res);
 	}
 	catch (...)
 	{
-		res.end();
 		throw;
 	}
 	return 0;
